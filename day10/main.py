@@ -44,10 +44,10 @@ class CardinalDirection(Direction, enum.Enum):
 		return -self
 
 	def right(self):
-		return CardinalDirection((-self.dy, self.dx))
+		return CardinalDirection((self.dx, -self.dy))
 
 	def left(self):
-		return CardinalDirection((self.dy, -self.dx))
+		return CardinalDirection((-self.dx, self.dy))
 
 	@classmethod
 	def from_glyph(cls, glyph):

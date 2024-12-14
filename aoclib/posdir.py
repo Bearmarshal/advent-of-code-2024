@@ -72,6 +72,13 @@ class Position(tuple):
 	
 	def __sub__(self, other):
 		return Direction(self.y - other.y, self.x - other.x)
+	
+	def wraparound(self, y_dim, x_dim):
+		if type(y_dim) is int:
+			y_dim = range(y_dim)
+		if type(x_dim) is int:
+			x_dim = range(x_dim)
+		return Position((self.y - y_dim.start) % (y_dim.stop - y_dim.start) + y_dim.start, (self.x - x_dim.start) % (x_dim.stop - x_dim.start) + x_dim.start)
 
 	def get_manhattan_distance(self, other):
 		return abs(self.y - other.y) + abs(self.x - other.x)

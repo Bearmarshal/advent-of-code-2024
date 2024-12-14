@@ -11,11 +11,7 @@ from aoclib.posdir import Position, Direction
 import aoclib.inputreader as inputreader
 
 def part1(filename):
-	y_size = 103
-	x_size = 101
-	robots = [Position((y + 100 * dy) % y_size, (x + 100 * dx) % x_size) for x, y, dx, dy in inputreader.read_int_groups(filename)]
-	safety_factor = math.prod(sum(1 for robot in robots if robot.y in range(q_y_low, q_y_high) and robot.x in range(q_x_low, q_x_high)) for q_y_low, q_y_high in ((0, y_size // 2), ((y_size + 1) // 2, y_size)) for q_x_low, q_x_high in ((0, x_size // 2), ((x_size + 1) // 2, x_size)))
-	print("Part 1: {}".format(safety_factor))
+	(y_size := 103), (x_size := 101), print("Part 1: {}".format(math.prod(collections.Counter(selector for robot in ((Position(y, x) + 100 * Direction(dy, dx)).wraparound(y_size, x_size) for x, y, dx, dy in inputreader.read_int_groups(filename)) if (selector := (robot.y < y_size // 2, robot.y > y_size // 2, robot.x < x_size // 2, robot.x > x_size // 2)).count(True) == 2).values())))
 
 def part2(filename):
 	y_size = 103
@@ -28,7 +24,7 @@ def part2(filename):
 			robots = [((position + direction).wraparound(y_size, x_size), direction) for position, direction in robots]
 			nonants = [[0 for _ in range(3)] for _ in range(3)]
 			for position, _ in robots:
-				nonants[min(position.y // (y_size // 3), 2)][min(position.x // (x_size // 3), 2)] += 1
+				nonants[3 * position.y // y_size][3 * position.x // x_size] += 1
 			symmetry = round(math.log2(math.prod(itertools.chain.from_iterable(nonants))))
 			elapsed += 1
 		robot_set = {robot[0] for robot in robots}

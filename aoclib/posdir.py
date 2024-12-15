@@ -79,6 +79,12 @@ class Position(tuple):
 		if type(x_dim) is int:
 			x_dim = range(x_dim)
 		return Position((self.y - y_dim.start) % (y_dim.stop - y_dim.start) + y_dim.start, (self.x - x_dim.start) % (x_dim.stop - x_dim.start) + x_dim.start)
+	
+	def __getitem__(self, map):
+		return map[self.y][self.x]
+	
+	def __setitem__(self, map, value):
+		map[self.y][self.x] = value
 
 	def get_manhattan_distance(self, other):
 		return abs(self.y - other.y) + abs(self.x - other.x)

@@ -71,7 +71,10 @@ class Position(tuple):
 		return Position(self.y + direction.dy, self.x + direction.dx)
 	
 	def __sub__(self, other):
-		return Direction(self.y - other.y, self.x - other.x)
+		if isinstance(other, Position):
+			return Direction(self.y - other.y, self.x - other.x)
+		elif isinstance(other, Direction):
+			return self + -other
 	
 	def wraparound(self, y_dim, x_dim):
 		if type(y_dim) is int:

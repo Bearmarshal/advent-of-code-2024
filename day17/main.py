@@ -33,7 +33,7 @@ def part1(filename):
 		elif opcode == 1:
 			b ^= operand
 		elif opcode == 2:
-			b = combo_operand(operand, a, b, c) % 8
+			b = combo_operand(operand, a, b, c) & 0b111
 		elif opcode == 3:
 			if a != 0:
 				ip = operand
@@ -41,7 +41,7 @@ def part1(filename):
 		elif opcode == 4:
 			b ^= c
 		elif opcode == 5:
-			out.append(combo_operand(operand, a, b, c) % 8)
+			out.append(combo_operand(operand, a, b, c) & 0b111)
 		elif opcode == 6:
 			b = a >> combo_operand(operand, a, b, c)
 		elif opcode == 7:
@@ -69,7 +69,7 @@ def part2(filename):
 					elif opcode == 1:
 						b ^= operand
 					elif opcode == 2:
-						b = combo_operand(operand, a, b, c) % 8
+						b = combo_operand(operand, a, b, c) & 0b111
 					elif opcode == 3:
 						if a != 0:
 							ip = operand
@@ -77,7 +77,7 @@ def part2(filename):
 					elif opcode == 4:
 						b ^= c
 					elif opcode == 5:
-						out = combo_operand(operand, a, b, c) % 8
+						out = combo_operand(operand, a, b, c) & 0b111
 						break
 					elif opcode == 6:
 						b = a >> combo_operand(operand, a, b, c)

@@ -10,6 +10,7 @@ import time
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from aoclib.posdir import Position, CardinalDirection
+from aoclib.tilemap import TileMap
 import aoclib.inputreader as inputreader
 
 from dataclasses import dataclass, field
@@ -26,28 +27,18 @@ def part1(filename):
 	
 	memory_dim_y = range(71)
 	memory_dim_x = range(71)
-	memory_map = [["." for _ in memory_dim_x] for _ in memory_dim_y]
+	memory_map = TileMap([["." for _ in memory_dim_x] for _ in memory_dim_y])
 	start = Position(0, 0)
 	end = Position(70, 70)
 
 	for memory_write in memory_writes[:1024]:
-		memory_write[memory_map] = "#"
+		memory_map[memory_write] = "#"
 
-	open_set = queue.PriorityQueue()
-	open_set.put(PrioritisedItem(start.get_manhattan_distance(end), (start, 0)))
-	closed_set = {}
-	while open_set.qsize():
-		prioritised_item = open_set.get()
-		position, distance = prioritised_item.item
-		if position in closed_set:
-			continue
-		closed_set[position] = distance
-		if position == end:
-			break
-		for direction in CardinalDirection:
-			neighbour = position + direction
-			if neighbour.y in memory_dim_y and neighbour.x in memory_dim_x and neighbour[memory_map] != "#" and neighbour not in closed_set:
-				open_set.put(PrioritisedItem(distance + 1 + neighbour.get_manhattan_distance(end), (neighbour, distance + 1)))
+	distance = memory_map.bfs(start, end,
+						  neighbours=lambda self, position: [neighbour for direction in CardinalDirection if (neighbour := position + direction) in self and memory_map[neighbour] != "#"],
+						  accumulator=lambda self, position, accumulated: accumulated + 1,
+						  initial_acc=lambda self, start: 0,
+	)
 	print("Part 1: {}".format(distance))
 
 def part2(filename):
@@ -63,27 +54,18 @@ def part2(filename):
 	first_failed = len(memory_writes)
 	while first_failed - last_succesful > 1:
 		i = (last_succesful + first_failed) // 2
-		memory_map = [["." for _ in memory_dim_x] for _ in memory_dim_y]
+		memory_map = TileMap([["." for _ in memory_dim_x] for _ in memory_dim_y])
 		for memory_write in memory_writes[:i + 1]:
-			memory_write[memory_map] = "#"
-		open_set = queue.PriorityQueue()
-		open_set.put(PrioritisedItem(start.get_manhattan_distance(end), (start, 0)))
-		closed_set = {}
-		while open_set.qsize():
-			prioritised_item = open_set.get()
-			position, distance = prioritised_item.item
-			if position in closed_set:
-				continue
-			closed_set[position] = distance
-			if position == end:
-				last_succesful = i
-				break
-			for direction in CardinalDirection:
-				neighbour = position + direction
-				if neighbour.y in memory_dim_y and neighbour.x in memory_dim_x and neighbour[memory_map] != "#" and neighbour not in closed_set:
-					open_set.put(PrioritisedItem(distance + 1 + neighbour.get_manhattan_distance(end), (neighbour, distance + 1)))
-		else:
+			memory_map[memory_write] = "#"
+		distance = memory_map.bfs(start, end,
+							neighbours=lambda self, position: [neighbour for direction in CardinalDirection if (neighbour := position + direction) in self and memory_map[neighbour] != "#"],
+							accumulator=lambda self, position, accumulated: accumulated + 1,
+							initial_acc=lambda self, start: 0,
+		)
+		if distance is None:
 			first_failed = i
+		else:
+			last_succesful = i
 	first_failed_write = memory_writes[first_failed]
 	print("Part 2: {},{}".format(first_failed_write.x, first_failed_write.y))
 

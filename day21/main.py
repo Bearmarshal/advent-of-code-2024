@@ -108,12 +108,6 @@ def part2(filename):
 		">": {"A":   "^A", "^": "<^A", "v":  "<A", "<":  "<<A", ">":   "A" },
 		}
 
-	for button in "A0123456789":
-		print(f"{button}: [", " | ".join(f"{other}: {numpad_sequences[button][other]:>6}" for other in "A0123456789"), "]")
-	print()
-	for button in "A^<v>":
-		print(f"{button}: [", " | ".join(f"{other}: {dirpad_sequences[button][other]:>6}" for other in "A^<v>"), "]")
-
 	keypads = [numpad] + 25 * [dirpad]
 	keypad_sequences = { numpad: numpad_sequences, dirpad: dirpad_sequences }
 	robots = ["A" for _ in keypads]
@@ -121,7 +115,6 @@ def part2(filename):
 	complexity = 0
 	cache = {}
 	for code in codes:
-		print(shortest_sequence_length(code, robots, keypads, keypad_sequences, cache))
 		complexity += int(code[:-1]) * shortest_sequence_length(code, robots, keypads, keypad_sequences, cache)
 
 	print("Part 2: {}".format(complexity))

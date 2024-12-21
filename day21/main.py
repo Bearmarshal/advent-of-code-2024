@@ -86,7 +86,7 @@ def part2(filename):
 	dir_buttons = { button_num: position for y in dirpad.y_dim for x in dirpad.x_dim if (button_num := dirpad[position := Position(y, x)]) != " " }
 
 	numpad_sequences = {button: {
-		other: "".join(direction.glyph() for direction in sorted((num_buttons[other] - num_buttons[button]).discretise(), key=lambda direction: (WEST, SOUTH, EAST, NORTH).index(direction))) + "A" for other in "A0123456789"
+		other: "".join(direction.glyph() for direction in sorted((num_buttons[other] - num_buttons[button]).discretise(), key=lambda direction: (WEST, SOUTH, NORTH, EAST).index(direction))) + "A" for other in "A0123456789"
 		} for button in "A0123456789"}
 	numpad_sequences["0"]["1"] = "^<A"
 	numpad_sequences["0"]["4"] = "^^<A"

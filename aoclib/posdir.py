@@ -26,6 +26,14 @@ class Direction(tuple):
 	def __rmul__(self, value):
 		return self.__mul__(value)
 	
+	def discretise(self):
+		steps = []
+		for _ in range(0, self.dy, dy_step := (-1 if self.dy < 0 else 1)):
+			steps.append(CardinalDirection((dy_step, 0)))
+		for _ in range(0, self.dx, dx_step := (-1 if self.dx < 0 else 1)):
+			steps.append(CardinalDirection((0, dx_step)))
+		return steps
+	
 class CardinalDirection(Direction, enum.Enum):
 	def __new__(cls, dy, dx):
 		self = Direction.__new__(cls, dy, dx)
@@ -66,6 +74,11 @@ class CardinalDirection(Direction, enum.Enum):
 	SOUTH = (1, 0)
 	WEST = (0, -1)
 	EAST = (0, 1)
+
+NORTH = CardinalDirection.NORTH
+SOUTH = CardinalDirection.SOUTH
+EAST = CardinalDirection.EAST
+WEST = CardinalDirection.WEST
 
 class Position(tuple):
 	def __new__(cls, y, x):

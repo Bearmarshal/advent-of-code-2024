@@ -77,3 +77,23 @@ class TileMap[T]:
 					remaining_heuristic = heuristic(self, neighbour, end)
 					open_set.put(AStarItem(new_distance + remaining_heuristic, remaining_heuristic, (neighbour, new_distance, accumulator(self, neighbour, accumulated))))
 		return None
+	
+	def find_all_shortest_paths(self,
+			start: Position,
+			end: Position,
+			neighbours: Callable[[Self, Position], Sequence[Position]] = lambda self, position: [neighbour for direction in CardinalDirection if (neighbour := position + direction) in self]) -> list[list[Position]]:
+		open_set = collections.deque([(start, [start])])
+		path_length = None
+		paths = []
+		while open_set:
+			position, accumulated = open_set.popleft()
+			if path_length is not None and len(accumulated) > path_length:
+				continue
+			if position == end:
+				path_length = len(accumulated)
+				paths.append(accumulated)
+				continue
+			for neighbour in neighbours(self, position):
+				if neighbour not in accumulated:
+					open_set.append((neighbour, accumulated + [neighbour]))
+		return paths

@@ -46,6 +46,13 @@ class CardinalDirection(Direction, enum.Enum):
 	
 	def __str__(self):
 		return self.name
+	
+	def glyph(self):
+		match self:
+			case CardinalDirection.NORTH: return "^"
+			case CardinalDirection.SOUTH: return "v"
+			case CardinalDirection.WEST: return "<"	
+			case CardinalDirection.EAST: return ">"
 
 	@classmethod
 	def from_glyph(cls, glyph):
